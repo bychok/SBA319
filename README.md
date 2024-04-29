@@ -1,3 +1,5 @@
+![An abstract digital artwork representing a Node.js and MongoDB API for Notes and Users](NodeMongoApp.webp)
+
 # Node.js & MongoDB API for Notes and Users
 
 ## Table of Contents
