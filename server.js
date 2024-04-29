@@ -1,42 +1,43 @@
 require("dotenv").config();
-// -----> allows .env
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// DB Connection
 const connectToDb = require("./config/connectToDb.js");
-// This pulls our Mongoose connection into application
-
-const Note = require("./models/note");
-const notesController = require("./controllers/notesController.js");
-const cors = require("cors");
-// ---> Recieving reqs on cross-origins **
-app.use(express.json());
-// Express doesnt naturally convert our data to json
-app.use(cors());
 connectToDb();
-// This initializes our connectToDB() function
-// -------------------------------------------------reQs
 
+// Models and Controllers
+const Note = require("./models/note");
+const User = require("./models/user");
+const notesController = require("./controllers/notesController.js");
+const userController = require("./controllers/userController.js");
 
-app.get("/", (req, res) => {
-  res.send("This is a Landing Page");
-});
+// Middleware
+app.use(express.json()); // For parsing application/json
+app.use(cors()); // Enable CORS
 
-// Obj: We want to establish CRUD routes for our Notes Model
+// Note Routes
 app.get("/notes", notesController.fetchAllNotes);
-// -----------------> GET all Notes - [Read]
 app.get("/notes/:id", notesController.fetchNote);
-// -----------------> GET a Specific Note by ID - [Read]
 app.post("/notes", notesController.createNote);
-// -----------------> Create a Notes - [Create / POST]
 app.put("/notes/:id", notesController.updateNote);
-// -----------------> Update a Specific Note - [Update]
 app.delete("/notes/:id", notesController.deleteNote);
-// -----------------> Delete a Specific Note - [Delete]
-// -------------------------------------------------Routing
 
+// User Routes
+app.get("/users", userController.fetchAllUsers);
+app.get("/users/:id", userController.fetchUser);
+app.post("/users", userController.createUser);
+app.put("/users/:id", userController.updateUser);
+app.delete("/users/:id", userController.deleteUser);
 
-app.listen(PORT, () => {
-  console.log(`Express Server Listening on port num: ${PORT}`);
+// Home route for basic API check
+app.get("/", (req, res) => {
+  res.send("This is the Landing Page of the Application");
 });
-// -------------------------------------------------Server
+
+// Starting the Server
+app.listen(PORT, () => {
+  console.log(`Express Server Listening on port ${PORT}`);
+});
